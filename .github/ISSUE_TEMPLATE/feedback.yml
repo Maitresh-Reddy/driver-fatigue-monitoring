@@ -1,0 +1,72 @@
+name: Feedback Report
+description: Share your run experience, issues, and suggestions for the Driver Fatigue Monitoring project
+title: "[Feedback] "
+labels:
+  - feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing this project. Please complete this form so we can reproduce and improve quickly.
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, and hardware/camera details
+      placeholder: Windows 11, Python 3.11, laptop webcam
+    validations:
+      required: true
+
+  - type: dropdown
+    id: run_mode
+    attributes:
+      label: Run Mode
+      options:
+        - webcam
+        - video
+    validations:
+      required: true
+
+  - type: dropdown
+    id: model_source
+    attributes:
+      label: Model Source
+      options:
+        - Pre-trained model files provided by project owner
+        - Trained locally using project scripts
+        - Mixed
+    validations:
+      required: true
+
+  - type: textarea
+    id: command_used
+    attributes:
+      label: Command Used
+      description: Share the exact command(s) you ran
+      placeholder: python src/main.py --mode video --video path/to/test_video.mp4
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened (include errors, stack trace, screenshots if available)
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggestions
+      description: Improvements or feature feedback
+      placeholder: UI clarity, model performance, setup instructions, etc.

@@ -64,6 +64,25 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Share This Project So Others Can Run It
+This repository is configured for security-first sharing.
+
+What is intentionally not tracked in Git:
+- Local datasets (`dataset/`, `src/dataset/`)
+- Local models (`models/`)
+- Local notebooks and runtime outputs (`notebooks/`, `results/`)
+
+To help others reproduce your experience, use one of these paths:
+
+1) Quick feedback path (recommended)
+- Share pre-trained model files (`eye_model.h5`, `yawn_model.h5`, `distraction_model.h5`, `drowsiness_model.h5`) as a GitHub Release asset or external download.
+- Ask testers to place them in `models/`.
+- Share a short sample video for validation and run with video mode.
+
+2) Full rebuild path
+- Testers run `python setup_and_train.py` (or `train_models.py`) to build models locally from their own dataset setup.
+- This path takes longer but avoids distributing model binaries.
+
 ## Run the App
 
 ### Webcam mode (recommended)
@@ -74,6 +93,11 @@ python src/main.py --mode webcam
 ### Video file mode
 ```bash
 python src/main.py --mode video --video path/to/video.mp4
+```
+
+### Recommended command for shared testing
+```bash
+python src/main.py --mode video --video path/to/test_video.mp4
 ```
 
 ## Emergency Contact + Location Alert Setup
@@ -203,6 +227,15 @@ git config core.hooksPath .githooks
 - If FPS is low:
   - Reduce `VIDEO_WIDTH` / `VIDEO_HEIGHT` in `src/config.py`.
   - Increase `INFERENCE_SKIP_FRAMES` in `src/config.py`.
+
+## Feedback Guide
+If you are testing this project, please share:
+- OS and Python version
+- Run mode used (`webcam` or `video`)
+- Whether models were pre-downloaded or trained locally
+- What worked as expected
+- What failed (include terminal logs / traceback)
+- Optional screenshot from dashboard and output artifacts from `results/`
 
 ## Safety Note
 This project is a monitoring aid and still not a substitute for safe driving practices or certified in-vehicle safety systems.
