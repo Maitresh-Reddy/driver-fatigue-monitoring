@@ -18,6 +18,7 @@ Please do **not** disclose vulnerabilities publicly until a fix is available.
 ## Secret & Credential Safety
 This project includes protections to reduce accidental secret leakage:
 
+- `.env.example` is a safe template and may be committed.
 - `.env` and local runtime artifacts are ignored by Git.
 - `results/emergency_settings.json` is ignored.
 - Runtime persistence sanitizes SMTP password before writing to disk.
