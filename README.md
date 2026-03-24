@@ -121,6 +121,8 @@ python src/main.py --mode video --video path/to/test_video.mp4
 5. Copy the 16-character **App Password** (you'll use it in `.env`)
 
 ### Step 2: Create `.env` File in Project Root
+> **Important:** `.env.example` is only a template (safe to commit). `.env` is your private real config file (never commit).
+
 1. Copy `.env.example` to `.env` (must be in same folder as this README)
 2. Open `.env` in any text editor and fill:
 
