@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
+# Runtime artifacts
+results/
+results/system.log
+results/event_timeline.jsonl
+results/session_report_*.json
+results/session_report_*.md
+results/critical_events/
+
+# Sensitive runtime settings (contains SMTP/app-password fields)
+results/emergency_settings.json
+
+# Local datasets (privacy/licensing and large files)
+dataset/
+src/dataset/
+
+# Local trained models/artifacts
+models/
+
+# Local notebooks (often contain outputs/embedded data)
+notebooks/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/settings.json
