@@ -110,42 +110,56 @@ python src/main.py --mode video --video path/to/test_video.mp4
 ```
 
 ## Emergency Contact + Location Alert Setup
-Copy `.env.example` to `.env`, then fill your values to enable emergency email alerts.
 
-Example `.env`:
+**Critical alerts are optional.** You can run the app without email setup. To enable emergency alerts:
+
+### Step 1: Enable 2FA & Create App Password (Gmail example)
+1. Go to https://myaccount.google.com/security
+2. Enable **2-Step Verification** if not already done
+3. Go to https://myaccount.google.com/apppasswords
+4. Select "Mail" + "Windows Computer" → Generate
+5. Copy the 16-character **App Password** (you'll use it in `.env`)
+
+### Step 2: Create `.env` File in Project Root
+1. Copy `.env.example` to `.env` (must be in same folder as this README)
+2. Open `.env` in any text editor and fill:
+
 ```env
 EMERGENCY_EMAIL_ENABLED=true
 
 EMERGENCY_SMTP_SERVER=smtp.gmail.com
 EMERGENCY_SMTP_PORT=587
 EMERGENCY_SMTP_USE_TLS=true
-EMERGENCY_SMTP_USERNAME=your_email@gmail.com
-EMERGENCY_SMTP_PASSWORD=your_app_password
+EMERGENCY_SMTP_USERNAME=your_gmail@gmail.com
+EMERGENCY_SMTP_PASSWORD=xxxx xxxx xxxx xxxx          # ← Paste App Password from Step 1
 
-EMERGENCY_FROM_EMAIL=your_email@gmail.com
-EMERGENCY_TO_EMAIL=emergency_contact@example.com
-EMERGENCY_EMAIL_SUBJECT_PREFIX=[Driver Monitor Emergency]
-EMERGENCY_EMAIL_COOLDOWN_SECONDS=120
+EMERGENCY_FROM_EMAIL=your_gmail@gmail.com            # ← Same as USERNAME
+EMERGENCY_TO_EMAIL=emergency_contact@example.com     # ← Who gets the alert
+EMERGENCY_EMAIL_SUBJECT_PREFIX=[Driver Monitor]
+EMERGENCY_EMAIL_COOLDOWN_SECONDS=300
 
 EMERGENCY_DRIVER_ID=DRIVER_01
 EMERGENCY_VEHICLE_ID=VEHICLE_01
 
-EMERGENCY_LOCATION_LAT=12.9715987
-EMERGENCY_LOCATION_LON=77.594566
-EMERGENCY_LOCATION_TEXT=MG Road, Bengaluru
-
-EMERGENCY_ALLOW_IP_GEOLOCATION=true
-EMERGENCY_IP_GEOLOCATION_URL=https://ipapi.co/json/
-EMERGENCY_HTTP_TIMEOUT_SECONDS=4.0
+EMERGENCY_LOCATION_TEXT=My Location                  # ← Optional
+# Leave LAT/LON blank for IP-based location lookup; otherwise set exact coordinates:
+EMERGENCY_LOCATION_LAT=
+EMERGENCY_LOCATION_LON=
 ```
 
-Behavior:
-- When the system enters `CRITICAL`, it captures a screenshot in `results/critical_events/`.
-- It sends one emergency email per critical episode to `EMERGENCY_TO_EMAIL`.
-- The email includes driver condition, fatigue/risk status, screenshot attachment, and coordinates.
-- If `EMERGENCY_LOCATION_LAT` and `EMERGENCY_LOCATION_LON` are set, those exact coordinates are used.
-- Otherwise, it falls back to IP-based location (approximate).
-- SMTP password is intentionally not persisted to `results/emergency_settings.json`; use `.env` for secure persistence.
+3. **Save and do NOT commit `.env` to Git** (it's in `.gitignore`)
+
+### Step 3: Run & Test
+```bash
+python src/main.py --mode webcam
+```
+
+When system reaches `CRITICAL` state:
+- One email is sent to `EMERGENCY_TO_EMAIL` with screenshot, driver condition, and location
+- Check Session Info panel (`Email Status`) to see if configured correctly
+- See `results/critical_events/` for captured images and `results/emergency_settings.json` for diagnostics
+
+**For non-Gmail SMTP:** Fill your provider's SMTP details (server, port, TLS setting, username/password)
 
 ## Controls
 - `t` - Toggle Light/Dark theme
@@ -170,11 +184,6 @@ Session Info includes emergency diagnostics:
 - `Email Status`: `SENT`, `FAILED`, `NOT CONFIGURED`, `COOLDOWN`, or `SKIPPED`
 - `Screenshot Status`: whether CRITICAL screenshot capture/notification succeeded
 - `Last Email` and `Last Screenshot` timestamps/messages for recent critical events
-
-Important:
-- Setting only `Emergency Contact Email` is not enough.
-- You must also set SMTP fields (`SMTP Server`, `SMTP Port`, `SMTP Username`, `SMTP Password`, `From Email`) and enable `Email Alerts Enabled`.
-- For Gmail, use `smtp.gmail.com`, port `587`, TLS on, and an App Password.
 
 ## Optional Utilities
 - Full setup + training workflow:
