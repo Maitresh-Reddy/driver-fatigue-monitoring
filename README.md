@@ -34,6 +34,13 @@ Install dependencies from:
 
 ## Setup
 
+### 0) Download Pre-trained Models (Quick Path - Recommended)
+Pre-trained models are available as a GitHub Release for immediate use without training:
+
+**[Download Pre-trained Models (v1.0-models)](https://github.com/Maitresh-Reddy/driver-fatigue-monitoring/releases/tag/v1.0-models)**
+
+Extract the 4 files (`eye_model.h5`, `yawn_model.h5`, `distraction_model.h5`, `drowsiness_model.h5`) into the `models/` folder after cloning.
+
 ### 1) Clone and enter project folder
 ```bash
 cd driver-fatigue-monitoring
@@ -74,10 +81,12 @@ What is intentionally not tracked in Git:
 
 To help others reproduce your experience, use one of these paths:
 
-1) Quick feedback path (recommended)
-- Share pre-trained model files (`eye_model.h5`, `yawn_model.h5`, `distraction_model.h5`, `drowsiness_model.h5`) as a GitHub Release asset or external download.
-- Ask testers to place them in `models/`.
-- Share a short sample video for validation and run with video mode.
+1) **Quick feedback path (recommended)** ⭐
+- Download pre-trained models from the **[GitHub Release (v1.0-models)](https://github.com/Maitresh-Reddy/driver-fatigue-monitoring/releases/tag/v1.0-models)**
+- Place the 4 `.h5` files in `models/`
+- Share a test video file (or ask testers to use their own)
+- Testers run: `python src/main.py --mode video --video path/to/test_video.mp4`
+- Feedback is immediate, no training required
 
 2) Full rebuild path
 - Testers run `python setup_and_train.py` (or `train_models.py`) to build models locally from their own dataset setup.
