@@ -39,6 +39,10 @@ class EmergencyAlertNotifier:
         if not self.is_enabled():
             return False, 'Emergency email disabled or missing SMTP configuration'
 
+        credentials_error = self._validate_credentials()
+        if credentials_error:
+            return False, credentials_error
+
         now_ts = time.time()
         cooldown_seconds = float(self.config.get('cooldown_seconds', 120) or 120)
         if self.last_sent_time is not None and (now_ts - self.last_sent_time) < cooldown_seconds:
@@ -71,6 +75,24 @@ class EmergencyAlertNotifier:
                     'screenshot': str(image_path),
                 })
             return False, f'Emergency email failed: {ex}'
+
+    def _validate_credentials(self):
+        smtp_server = str(self.config.get('smtp_server', '')).strip().lower()
+        smtp_password = str(self.config.get('smtp_password', ''))
+
+        compact_password = smtp_password.replace(' ', '')
+        if compact_password != smtp_password:
+            self.config['smtp_password'] = compact_password
+            smtp_password = compact_password
+
+        if 'smtp.gmail.com' in smtp_server:
+            if len(smtp_password) != 16 or not smtp_password.isalnum():
+                return (
+                    'Gmail SMTP auth failed: use a valid 16-character App Password '
+                    '(Google Account -> Security -> App passwords).'
+                )
+
+        return None
 
     def _build_subject(self, state_dict):
         prefix = str(self.config.get('subject_prefix', '[Driver Monitor Emergency]')).strip()
