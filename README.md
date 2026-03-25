@@ -2,6 +2,8 @@
 
 Real-time driver monitoring for fatigue, distraction,drowsiness and emergency detection with a dashboard UI.
 
+Quick Start (after setup): `python main.py --mode webcam`
+
 ## Features
 - Real-time webcam/video monitoring
 - Eye/yawn/head-pose based fatigue analytics
