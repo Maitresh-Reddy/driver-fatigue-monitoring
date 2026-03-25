@@ -12,6 +12,12 @@ env/
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secret*.json
 
 # Runtime artifacts
 results/
@@ -41,3 +47,6 @@ notebooks/
 .DS_Store
 Thumbs.db
 .vscode/settings.json
+.pytest_cache/
+.mypy_cache/
+*.log

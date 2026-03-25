@@ -31,6 +31,20 @@ Before every push, run:
 python scripts/secret_guard.py --all
 ```
 
+## Repository Hygiene (Local Artifacts)
+Generated runtime files and caches should remain local and untracked.
+
+Safe-to-delete local artifacts include:
+- `__pycache__/` directories
+- `results/system.log`
+- `results/event_timeline.jsonl`
+- `results/critical_events/*.png`
+- `results/session_report_*.json`
+- `results/session_report_*.md`
+- `results/emergency_settings.json`
+
+Keep `results/training_results.json` if you rely on consistent runtime model-quality gating behavior.
+
 If credentials are exposed:
 
 1. Revoke/rotate the credential immediately.

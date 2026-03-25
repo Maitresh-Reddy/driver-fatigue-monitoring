@@ -225,6 +225,22 @@ When running the app, these may be created automatically:
 - `results/session_report_*.json`
 - `results/session_report_*.md`
 
+Notes:
+- `results/training_results.json` is used by runtime quality-gating logic and should be kept if you want consistent deployment behavior.
+- `results/emergency_settings.json` stores non-secret emergency UI preferences; SMTP password is never persisted there.
+
+## Safe Workspace Cleanup
+To remove generated runtime artifacts and Python caches (without affecting core features), run:
+
+```powershell
+Get-ChildItem -Path . -Recurse -Directory -Filter __pycache__ | Remove-Item -Recurse -Force
+if (Test-Path results\critical_events) { Remove-Item results\critical_events\* -Force }
+Remove-Item results\system.log,results\event_timeline.jsonl,results\fatigue_trend.png,results\test_results.json,results\emergency_settings.json -ErrorAction SilentlyContinue
+Get-ChildItem results -Filter session_report_* | Remove-Item -Force -ErrorAction SilentlyContinue
+```
+
+This cleanup keeps source code and model behavior intact.
+
 ## GitHub / Secret Safety
 - `results/emergency_settings.json` may include non-secret SMTP metadata (server/username/to-email), but SMTP password is sanitized.
 - Do not commit this file to Git.
