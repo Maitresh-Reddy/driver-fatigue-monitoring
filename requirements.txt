@@ -29,6 +29,7 @@ plotly==5.15.0
 tqdm==4.65.0
 pyyaml==6.0
 python-dotenv==1.0.0
+winsdk==1.0.0b10; platform_system=="Windows"
 
 # Jupyter
 jupyter==1.0.0

@@ -1,8 +1,10 @@
 import json
 import mimetypes
+import os
 import smtplib
 import ssl
 import time
+import asyncio
 from datetime import datetime
 from email.message import EmailMessage
 from pathlib import Path
@@ -150,6 +152,11 @@ class EmergencyAlertNotifier:
                 'source': 'manual_exact',
             }
 
+        if bool(self.config.get('allow_device_geolocation', True)):
+            device_location = self._resolve_via_device_location(manual_text)
+            if device_location is not None:
+                return device_location
+
         if not bool(self.config.get('allow_ip_geolocation', True)):
             return {
                 'latitude': None,
@@ -159,6 +166,42 @@ class EmergencyAlertNotifier:
             }
 
         return self._resolve_via_ip_geolocation(manual_text)
+
+    def _resolve_via_device_location(self, fallback_text):
+        if os.name != 'nt':
+            return None
+
+        try:
+            from winsdk.windows.devices.geolocation import Geolocator, PositionAccuracy
+        except Exception:
+            return None
+
+        async def _read_position():
+            geolocator = Geolocator()
+            geolocator.desired_accuracy = PositionAccuracy.HIGH
+            geolocator.desired_accuracy_in_meters = 80
+            position = await geolocator.get_geoposition_async()
+            coords = position.coordinate.point.position
+            return float(coords.latitude), float(coords.longitude)
+
+        try:
+            try:
+                lat, lon = asyncio.run(_read_position())
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                try:
+                    lat, lon = loop.run_until_complete(_read_position())
+                finally:
+                    loop.close()
+
+            return {
+                'latitude': lat,
+                'longitude': lon,
+                'location_text': fallback_text or 'Device location services',
+                'source': 'device_location',
+            }
+        except Exception:
+            return None
 
     def _resolve_via_ip_geolocation(self, fallback_text):
         url = str(self.config.get('ip_geolocation_url', 'https://ipapi.co/json/')).strip()

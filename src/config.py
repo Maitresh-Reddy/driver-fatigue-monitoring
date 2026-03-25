@@ -131,6 +131,7 @@ EMERGENCY_ALERT_CONFIG = {
     'manual_latitude': os.getenv('EMERGENCY_LOCATION_LAT', ''),
     'manual_longitude': os.getenv('EMERGENCY_LOCATION_LON', ''),
     'manual_location_text': os.getenv('EMERGENCY_LOCATION_TEXT', ''),
+    'allow_device_geolocation': _env_bool('EMERGENCY_ALLOW_DEVICE_GEOLOCATION', True),
     'allow_ip_geolocation': _env_bool('EMERGENCY_ALLOW_IP_GEOLOCATION', True),
     'ip_geolocation_url': os.getenv('EMERGENCY_IP_GEOLOCATION_URL', 'https://ipapi.co/json/'),
     'http_timeout_seconds': float(os.getenv('EMERGENCY_HTTP_TIMEOUT_SECONDS', '4.0')),

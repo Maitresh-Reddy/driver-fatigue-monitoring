@@ -144,9 +144,10 @@ EMERGENCY_DRIVER_ID=DRIVER_01
 EMERGENCY_VEHICLE_ID=VEHICLE_01
 
 EMERGENCY_LOCATION_TEXT=My Location                  # ← Optional
-# Leave LAT/LON blank for IP-based location lookup; otherwise set exact coordinates:
+# Leave LAT/LON blank for automatic location lookup (device location on Windows, then IP fallback):
 EMERGENCY_LOCATION_LAT=
 EMERGENCY_LOCATION_LON=
+EMERGENCY_ALLOW_DEVICE_GEOLOCATION=true
 ```
 
 3. **Save and do NOT commit `.env` to Git** (it's in `.gitignore`)
@@ -160,6 +161,7 @@ When system reaches `CRITICAL` state:
 - One email is sent to `EMERGENCY_TO_EMAIL` with screenshot, driver condition, and location
 - Check Session Info panel (`Email Status`) to see if configured correctly
 - See `results/critical_events/` for captured images and `results/emergency_settings.json` for diagnostics
+- Location priority: Manual coordinates > Device location services (Windows) > IP geolocation fallback
 
 **For non-Gmail SMTP:** Fill your provider's SMTP details (server, port, TLS setting, username/password)
 
