@@ -1235,6 +1235,15 @@ class DriverFatigueMonitoringPipeline:
                 key_code = cv2.waitKeyEx(1)
                 key = key_code & 0xFF
 
+                # Report overlay behaves as a modal exit confirmation.
+                if self.report_overlay_data is not None:
+                    if key_code in (27, 13, 10, 32) or key in (ord('q'), ord('e')):
+                        self.request_exit = True
+                        break
+                    if key == ord('t'):
+                        self.visualizer.toggle_theme()
+                    continue
+
                 if self.emergency_settings_open:
                     if key_code != -1:
                         self._handle_emergency_settings_key(key_code)

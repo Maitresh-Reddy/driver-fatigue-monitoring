@@ -455,7 +455,7 @@ class Visualizer:
             for line in overlay_lines:
                 cv2.putText(canvas, line, (ox1 + 28, ly), self.font, 0.62, (206, 220, 240), 1)
                 ly += 34
-            cv2.putText(canvas, "Report saved to results/. Press Exit to close app.", (ox1 + 28, oy2 - 24), self.font, 0.54, (180, 196, 220), 1)
+            cv2.putText(canvas, "Report saved to results/. Press ESC, ENTER, SPACE, Q or E to close.", (ox1 + 28, oy2 - 24), self.font, 0.54, (180, 196, 220), 1)
 
         emergency_overlay = state_dict.get('emergency_settings_overlay')
         if emergency_overlay is not None:
