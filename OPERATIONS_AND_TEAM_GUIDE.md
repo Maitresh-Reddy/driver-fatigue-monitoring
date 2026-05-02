@@ -123,6 +123,50 @@ python smoke_test.py
 
 Final score clipped to [0, 100] and mapped to driver state (Alert/Caution/Warning/Critical).
 
+#### Mathematical Formulas
+
+Below are the concise mathematical formulas used by the detection pipeline and scoring system.
+
+- Eye Aspect Ratio (EAR):
+   $$EAR = \frac{\|p_2 - p_6\| + \|p_3 - p_5\|}{2 \cdot \|p_1 - p_4\|}$$
+   - `p1..p6` are the eye landmark points (upper/lower pairs).
+   - Normalized eye signal (higher = more closed):
+   $$s_{eye} = \mathrm{clip}\left(\frac{E_{th} - EAR}{E_{th}},\;0,\;1\right)$$
+   - Typical threshold: $E_{th}\approx 0.25$.
+
+- Mouth Aspect Ratio (MAR) / Yawn detection:
+   $$MAR = \frac{\|u - l\|}{\|c_l - c_r\|}$$
+   - `u` = upper inner-lip point, `l` = lower inner-lip point, `c_l/c_r` = mouth corners.
+   - Yawn detected when $MAR > MAR_{th}$ continuously for $t_{dur} > T_{yawn}$ (e.g., $T_{yawn}=0.5\,$s).
+   - Normalized yawn signal (optional continuous form):
+   $$s_{yawn} = \mathrm{clip}\left(\frac{t_{dur} - T_{yawn}}{T_{max} - T_{yawn}},\;0,\;1\right)$$
+   - Or use binary $s_{yawn}\in\{0,1\}$ when only presence/absence is required.
+
+- Head pose / Distraction:
+   - Compute Euler angles (pitch, yaw, roll) via solvePnP → rotation matrix.
+   $$\text{head\_angle} = \max(|\mathrm{pitch}|,|\mathrm{yaw}|,|\mathrm{roll}|)$$
+   - Normalized pose signal:
+   $$s_{pose} = \mathrm{clip}\left(\frac{\text{head\_angle} - A_{min}}{A_{max} - A_{min}},\;0,\;1\right)$$
+   - Example: $A_{min}=25^\circ,\;A_{max}=45^\circ$.
+
+- Drowsiness model:
+   - Model outputs probability $p_{drowsy}\in[0,1]$, use
+   $$s_{drowsy} = p_{drowsy}$$
+
+- Composite Fatigue Score (0–100):
+   - With normalized signals $s_{eye}, s_{yawn}, s_{pose}, s_{drowsy}$ and weights $w_i$ (sum to 1):
+   $$S_{raw} = w_{eye}s_{eye} + w_{yawn}s_{yawn} + w_{pose}s_{pose} + w_{drowsy}s_{drowsy}$$
+   $$\text{FatigueScore} = 100 \cdot \mathrm{clip}(S_{raw},\;0,\;1)$$
+   - Example weights: $w_{eye}=0.30,\;w_{yawn}=0.25,\;w_{pose}=0.20,\;w_{drowsy}=0.25$.
+
+- Smoothing (exponential moving average):
+   $$\hat S_t = \alpha S_t + (1-\alpha) \hat S_{t-1},\qquad \alpha\in(0,1]$$
+   - Typical $\alpha\in[0.1,0.3]$ (lower = smoother).
+
+- Hysteresis for state transitions:
+   - Use separate enter/exit thresholds to avoid chattering. Example for Critical:
+   - Enter Critical if $\hat S \ge 81$, exit Critical if $\hat S \le 75$.
+
 #### Event Types
 | Event | Trigger | Action |
 |-------|---------|--------|
