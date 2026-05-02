@@ -213,6 +213,31 @@ Below are the concise mathematical formulas used by the detection pipeline and s
 
 ---
 
+## Configured Thresholds (from `src/config.py`)
+
+The table below lists the runtime thresholds and defaults currently set in `src/config.py`. These are authoritative for runtime behavior unless overridden by `.env` or command-line flags.
+
+| Setting | Value | Notes |
+|---|---:|---|
+| `EYE_ASPECT_RATIO_THRESHOLD` | 0.20 | EAR below this considered closed |
+| `EYE_CLOSURE_DURATION_THRESHOLD` | 1.5 s | Seconds of continuous closure to flag |
+| `MOUTH_ASPECT_RATIO_THRESHOLD` | 0.50 | MAR threshold for mouth-open signal |
+| `YAWN_DURATION_THRESHOLD` | 0.50 s | Minimum duration to treat as yawn |
+| `YAWN_CONFIDENCE_THRESHOLD` | 0.45 | Model confidence floor for yawn |
+| `YAWN_MAR_THRESHOLD` | 0.48 | Alternate MAR threshold used in fusion |
+| `YAWN_MIN_POSITIVE_FRAMES` | 2 frames | Minimum frames of MAR>thresh to count |
+| `DISTRACTION_CONFIDENCE_THRESHOLD` | 0.60 | Distraction model confidence threshold |
+| `DROWSINESS_CONFIDENCE_THRESHOLD` | 0.55 | Drowsiness model probability threshold |
+| `HEAD_DROOP_THRESHOLD` | 20° | Degrees from vertical considered droop |
+| `BASELINE_CALIBRATION_SECONDS` | 30 s | Calibration duration at session start |
+| `MIN_CONSECUTIVE_DETECTIONS` | 5 frames | Reduce false positives by requiring runs |
+| `TEMPORAL_SMOOTHING_WINDOW` | 3 frames | Short temporal smoothing window |
+| `ALERT_CONFIG['alert_cooldown']` | 5 s | Cooldown between same-type alerts |
+| `EMERGENCY_ALERT_CONFIG['cooldown_seconds']` | 120 s | Emergency email cooldown (env override possible) |
+| `FATIGUE_SCORE_WEIGHTS` | `{'eye_closure':0.4,'yawn_frequency':0.3,'head_droop':0.3}` | Weights used in composite score (sum=1) |
+| `FATIGUE_SCORE_THRESHOLDS` | `{'low':20,'moderate':40,'high':60,'critical':80}` | Threshold buckets used by monitoring logic |
+
+
 ## Feature Functionality Matrix
 
 ### Real-Time Detection Pipeline
